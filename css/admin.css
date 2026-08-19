@@ -353,6 +353,7 @@
   }
   .sidebar.open {
     transform: translateX(0);
+    z-index: 210; /* above mobile action bar (z-index: 200) */
   }
   .sidebar-toggle {
     display: flex;
@@ -415,9 +416,25 @@
     padding: 20px 16px;
     gap: 16px;
   }
+  /* Force the 3 stat boxes into a compact 3-column grid on phone */
   .customer-detail-header > div:last-child {
-    width: 100%;
-    justify-content: center;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+    width: 100% !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+  }
+  .customer-detail-header > div:last-child > div {
+    padding: 10px 6px !important;
+    min-width: 0;
+    border-radius: 10px !important;
+  }
+  .customer-detail-header > div:last-child > div > div:first-child {
+    font-size: 0.65rem !important; /* smaller label */
+  }
+  .customer-detail-header > div:last-child > div > div:last-child {
+    font-size: 0.88rem !important; /* smaller value */
   }
   .customer-detail-info { text-align: center; }
 
@@ -460,6 +477,15 @@
 
   /* Add bottom padding to page content so it's not hidden behind the action bar */
   .has-mobile-bar .page-content { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+
+  /* Add bottom padding to sidebar footer so logout button is never hidden */
+  .sidebar-footer {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+  /* Extra padding when mobile action bar is present */
+  .has-mobile-bar .sidebar-footer {
+    padding-bottom: calc(84px + env(safe-area-inset-bottom));
+  }
 }
 
 /* ===== Sidebar Overlay (mobile) ===== */
