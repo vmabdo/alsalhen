@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>الصالحين - تسجيل الدخول</title>
+  <meta name="description" content="بوابة تسجيل الدخول لمتجر الصالحين لقطع غيار الهواتف بالجملة" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #080f1e 0%, #0F1F3D 45%, #1a3460 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated background shapes */
+    .bg-shape {
+      position: absolute;
+      border-radius: 50%;
+      animation: float 8s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .bg-shape-1 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+      top: -100px; left: -100px;
+      animation-delay: 0s;
+    }
+    .bg-shape-2 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 70%);
+      bottom: -80px; right: -80px;
+      animation-delay: -3s;
+    }
+    .bg-shape-3 {
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(201,168,76,0.05) 0%, transparent 70%);
+      top: 50%; right: 15%;
+      animation-delay: -5s;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-20px) scale(1.05); }
+    }
+
+    /* Grid pattern overlay */
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    /* Login container */
+    .login-container {
+      width: 100%;
+      max-width: 460px;
+      padding: 20px;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Logo area */
+    .login-logo {
+      text-align: center;
+      margin-bottom: 32px;
+      animation: fadeInDown 0.6s ease;
+    }
+    .login-logo .logo-icon {
+      width: 80px; height: 80px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      border-radius: 22px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.2rem;
+      color: var(--primary-dark);
+      margin: 0 auto 16px;
+      box-shadow: 0 10px 40px rgba(201,168,76,0.4), 0 0 0 1px rgba(201,168,76,0.2);
+    }
+    .login-logo h1 {
+      color: white;
+      font-size: 2rem;
+      font-weight: 900;
+      margin: 0 0 6px;
+      letter-spacing: -0.5px;
+    }
+    .login-logo p {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.88rem;
+      margin: 0;
+    }
+
+    /* Login card */
+    .login-card {
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 24px;
+      padding: 36px 36px 32px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+      animation: fadeInUp 0.6s ease 0.1s both;
+    }
+
+    .login-card h2 {
+      color: white;
+      font-size: 1.3rem;
+      margin-bottom: 6px;
+      text-align: center;
+    }
+    .login-card .subtitle {
+      color: rgba(255,255,255,0.45);
+      font-size: 0.85rem;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    /* Role switcher */
+    .role-switcher {
+      display: flex;
+      background: rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .role-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.88rem;
+      font-weight: 600;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+    .role-btn.active {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: var(--primary-dark);
+      box-shadow: 0 4px 15px rgba(201,168,76,0.35);
+    }
+    .role-btn:hover:not(.active) { color: white; background: rgba(255,255,255,0.08); }
+
+    /* Form inside dark card */
+    .login-card .form-label {
+      color: rgba(255,255,255,0.75);
+      font-size: 0.85rem;
+    }
+    .login-card .form-control {
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(255,255,255,0.12);
+      color: white;
+    }
+    .login-card .form-control:focus {
+      background: rgba(255,255,255,0.10);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.18);
+    }
+    .login-card .form-control::placeholder { color: rgba(255,255,255,0.28); }
+
+    /* Password toggle */
+    .password-wrapper {
+      position: relative;
+    }
+    .password-toggle {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer;
+      padding: 4px;
+      transition: var(--transition);
+      font-size: 0.95rem;
+    }
+    .password-toggle:hover { color: var(--accent); }
+
+    /* Login button */
+    .btn-login {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: var(--primary-dark);
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px;
+      margin-top: 6px;
+      box-shadow: 0 6px 20px rgba(201,168,76,0.35);
+    }
+    .btn-login:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(201,168,76,0.5);
+    }
+    .btn-login:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+
+    /* Error alert */
+    .login-error {
+      background: rgba(239,68,68,0.12);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: #fca5a5;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    /* Footer */
+    .login-footer {
+      text-align: center;
+      margin-top: 24px;
+      color: rgba(255,255,255,0.25);
+      font-size: 0.78rem;
+      animation: fadeIn 0.6s ease 0.3s both;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 480px) {
+      .login-card { padding: 24px 20px 20px; border-radius: 18px; }
+      .login-logo .logo-icon { width: 64px; height: 64px; font-size: 1.7rem; border-radius: 18px; }
+      .login-logo h1 { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated background -->
+  <div class="bg-shape bg-shape-1"></div>
+  <div class="bg-shape bg-shape-2"></div>
+  <div class="bg-shape bg-shape-3"></div>
+
+  <div class="login-container">
+    <!-- Logo -->
+    <div class="login-logo">
+      <div class="logo-icon"><i class="fas fa-mobile-screen-button"></i></div>
+      <h1>الصالحين</h1>
+      <p>قطع غيار الهواتف بالجملة</p>
+    </div>
+
+    <!-- Login Card -->
+    <div class="login-card">
+      <h2>مرحباً بك 👋</h2>
+      <p class="subtitle">سجّل دخولك للمتابعة</p>
+
+      <!-- Role Switcher -->
+      <div class="role-switcher">
+        <button class="role-btn active" id="role-admin-btn" onclick="setRole('admin')">
+          <i class="fas fa-shield-halved"></i> لوحة الإدارة
+        </button>
+        <button class="role-btn" id="role-customer-btn" onclick="setRole('customer')">
+          <i class="fas fa-user"></i> بوابة العملاء
+        </button>
+      </div>
+
+      <!-- Error Message -->
+      <div class="login-error hidden" id="login-error">
+        <i class="fas fa-circle-exclamation"></i>
+        <span id="error-text"></span>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="login-email">
+            <span id="email-label">البريد الإلكتروني للمدير</span>
+          </label>
+          <div style="position:relative">
+            <input
+              type="email"
+              id="login-email"
+              class="form-control"
+              placeholder="admin@example.com"
+              autocomplete="email"
+              required
+            />
+            <i class="fas fa-envelope" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.25);pointer-events:none"></i>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="login-password">كلمة المرور</label>
+          <div class="password-wrapper">
+            <input
+              type="password"
+              id="login-password"
+              class="form-control"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              required
+              style="padding-left:42px"
+            />
+            <button type="button" class="password-toggle" id="toggle-password" aria-label="إظهار كلمة المرور">
+              <i class="fas fa-eye" id="eye-icon"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-login" id="login-btn">
+          <i class="fas fa-right-to-bracket"></i>
+          <span>تسجيل الدخول</span>
+        </button>
+      </form>
+    </div>
+
+    <div class="login-footer">
+      <i class="fas fa-lock"></i> &nbsp;جميع البيانات محمية ومشفرة &nbsp;|&nbsp; الصالحين &copy; 2025
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script type="module">
+    import { auth, db } from './js/firebase-config.js';
+    import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuthErrorMessage } from './js/auth.js';
+
+    let currentRole = 'admin';
+
+    // Role switcher
+    window.setRole = function(role) {
+      currentRole = role;
+      document.getElementById('role-admin-btn').classList.toggle('active', role === 'admin');
+      document.getElementById('role-customer-btn').classList.toggle('active', role === 'customer');
+      const emailLabel = document.getElementById('email-label');
+      const emailInput = document.getElementById('login-email');
+      if (role === 'admin') {
+        emailLabel.textContent = 'البريد الإلكتروني للمدير';
+        emailInput.placeholder = 'admin@example.com';
+      } else {
+        emailLabel.textContent = 'البريد الإلكتروني';
+        emailInput.placeholder = 'customer@example.com';
+      }
+      hideError();
+    };
+
+    // Password toggle
+    const toggleBtn = document.getElementById('toggle-password');
+    const passInput = document.getElementById('login-password');
+    const eyeIcon = document.getElementById('eye-icon');
+    toggleBtn.addEventListener('click', () => {
+      const isPass = passInput.type === 'password';
+      passInput.type = isPass ? 'text' : 'password';
+      eyeIcon.className = isPass ? 'fas fa-eye-slash' : 'fas fa-eye';
+    });
+
+    // Error display
+    function showError(msg) {
+      const el = document.getElementById('login-error');
+      document.getElementById('error-text').textContent = msg;
+      el.classList.remove('hidden');
+    }
+    function hideError() {
+      document.getElementById('login-error').classList.add('hidden');
+    }
+
+    // Login form
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideError();
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+
+      if (!email || !password) {
+        showError('يرجى إدخال البريد الإلكتروني وكلمة المرور.');
+        return;
+      }
+
+      const btn = document.getElementById('login-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ الدخول...';
+
+      try {
+        const cred = await signInWithEmailAndPassword(auth, email, password);
+        const userDoc = await getDoc(doc(db, 'users', cred.user.uid));
+
+        if (!userDoc.exists()) {
+          showError('لم يتم العثور على بيانات الحساب. تواصل مع المدير.');
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-right-to-bracket"></i> تسجيل الدخول';
+          return;
+        }
+
+        const userData = userDoc.data();
+
+        if (currentRole === 'admin' && userData.role !== 'admin') {
+          showError('هذا الحساب ليس حساب مدير. استخدم بوابة العملاء.');
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-right-to-bracket"></i> تسجيل الدخول';
+          return;
+        }
+        if (currentRole === 'customer' && userData.role !== 'customer') {
+          showError('هذا حساب مدير. استخدم لوحة الإدارة.');
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-right-to-bracket"></i> تسجيل الدخول';
+          return;
+        }
+
+        // Redirect based on role
+        if (userData.role === 'admin') {
+          window.location.href = '/admin/dashboard.html';
+        } else {
+          window.location.href = '/customer/dashboard.html';
+        }
+
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-right-to-bracket"></i> تسجيل الدخول';
+        showError(getAuthErrorMessage(err.code));
+      }
+    });
+
+    // Check if already logged in
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          if (userDoc.exists()) {
+            const role = userDoc.data().role;
+            window.location.href = role === 'admin' ? '/admin/dashboard.html' : '/customer/dashboard.html';
+          }
+        } catch (_) {}
+      }
+    });
+  </script>
+</body>
+</html>

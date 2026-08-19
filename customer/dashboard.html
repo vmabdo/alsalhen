@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>الصالحين - حسابي</title>
+  <meta name="description" content="بوابة العميل - متجر الصالحين لقطع غيار الهواتف" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/customer.css" />
+</head>
+<body>
+
+  <div class="customer-layout">
+
+    <!-- ===== TOPBAR ===== -->
+    <header class="customer-topbar">
+      <div class="brand">
+        <div class="brand-icon"><i class="fas fa-mobile-screen-button"></i></div>
+        <div>
+          <div class="brand-name">الصالحين</div>
+          <div style="font-size:0.62rem;color:rgba(255,255,255,0.4)">قطع غيار الهواتف</div>
+        </div>
+      </div>
+
+      <div class="customer-user-info">
+        <div style="text-align:left">
+          <div class="user-name" id="user-display-name">جارٍ التحميل...</div>
+          <div class="user-label">عميل</div>
+        </div>
+        <div class="customer-avatar-sm" id="user-avatar">?</div>
+        <button class="btn btn-secondary btn-sm" id="logout-btn"
+          style="border-color:rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.07)">
+          <i class="fas fa-right-from-bracket"></i>
+          <span class="hide-xs">خروج</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ===== CONTENT ===== -->
+    <div class="customer-content">
+
+      <!-- Welcome Banner -->
+      <div class="welcome-banner">
+        <div class="welcome-text">
+          <h2 id="welcome-name">مرحباً 👋</h2>
+          <p id="welcome-sub">هذه نظرة عامة على حسابك في متجر الصالحين</p>
+        </div>
+        <div class="welcome-date">
+          <div class="date-day" id="today-day">--</div>
+          <div class="date-month" id="today-month">---</div>
+        </div>
+      </div>
+
+      <!-- Balance Cards -->
+      <div class="balance-cards">
+        <div class="balance-card purchases">
+          <div class="card-icon"><i class="fas fa-cart-shopping"></i></div>
+          <div>
+            <div class="card-label">إجمالي المشتريات</div>
+            <div class="card-amount" id="total-purchases">---</div>
+          </div>
+        </div>
+        <div class="balance-card paid">
+          <div class="card-icon"><i class="fas fa-money-bill-wave"></i></div>
+          <div>
+            <div class="card-label">إجمالي المدفوع</div>
+            <div class="card-amount" id="total-paid">---</div>
+          </div>
+        </div>
+        <div class="balance-card remaining" id="balance-card">
+          <div class="card-icon"><i class="fas fa-scale-unbalanced" id="balance-icon"></i></div>
+          <div>
+            <div class="card-label">الرصيد المتبقي</div>
+            <div class="card-amount" id="total-balance">---</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ledger -->
+      <div class="card ledger-section">
+        <div class="ledger-header">
+          <h3><i class="fas fa-receipt" style="color:var(--accent-dark);margin-left:8px"></i>كشف الحساب التفصيلي</h3>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <div class="filter-bar" style="margin:0">
+              <button class="filter-btn active" data-filter="all">الكل</button>
+              <button class="filter-btn" data-filter="purchase">المشتريات</button>
+              <button class="filter-btn" data-filter="payment">الدفعات</button>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="window.print()">
+              <i class="fas fa-print"></i> طباعة
+            </button>
+          </div>
+        </div>
+
+        <!-- Summary row -->
+        <div id="summary-row" style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+          <div class="badge badge-info" id="count-purchases"><i class="fas fa-cart-shopping"></i> -- مشترى</div>
+          <div class="badge badge-success" id="count-payments"><i class="fas fa-money-bill-wave"></i> -- دفعة</div>
+          <div class="running-balance positive" id="running-label">الرصيد الحالي: ---</div>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>التاريخ</th>
+                <th>النوع</th>
+                <th>الصنف / الوصف</th>
+                <th>الكمية</th>
+                <th>السعر</th>
+                <th>المبلغ</th>
+                <th>الرصيد التراكمي</th>
+              </tr>
+            </thead>
+            <tbody id="ledger-tbody">
+              <tr>
+                <td colspan="8" style="text-align:center;padding:40px">
+                  <div class="loading-spinner" style="margin:0 auto 12px"></div>
+                  <p class="text-muted">جارٍ تحميل بياناتك...</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div><!-- /card -->
+
+    </div><!-- /customer-content -->
+  </div><!-- /customer-layout -->
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Print styles -->
+  <style>
+    @media print {
+      .customer-topbar, .welcome-banner, .balance-cards, .filter-bar, button { display: none !important; }
+      .customer-content { padding: 0; max-width: 100%; }
+      .card { box-shadow: none; border: 1px solid #ddd; }
+    }
+  </style>
+
+  <script type="module">
+    import { db, auth } from '../js/firebase-config.js';
+    import { requireAuth, logoutUser } from '../js/auth.js';
+    import {
+      doc, onSnapshot, collection, query, orderBy
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import {
+      formatCurrency, formatDate, getInitials, showToast
+    } from '../js/utils.js';
+
+    // Auth guard - customer only
+    let currentUser;
+    try { currentUser = await requireAuth('customer'); }
+    catch (_) { window.location.href = '/index.html'; }
+
+    // Set user info
+    const initials = getInitials(currentUser.displayName || currentUser.username || '?');
+    document.getElementById('user-avatar').textContent = initials;
+    document.getElementById('user-display-name').textContent = currentUser.displayName || currentUser.username;
+    document.getElementById('welcome-name').textContent = `مرحباً، ${currentUser.displayName?.split(' ')[0] || 'عزيزي العميل'} 👋`;
+
+    // Date
+    const now = new Date();
+    document.getElementById('today-day').textContent = now.getDate();
+    document.getElementById('today-month').textContent = new Intl.DateTimeFormat('ar-EG', { month: 'long', year: 'numeric' }).format(now);
+
+    // Logout
+    document.getElementById('logout-btn').addEventListener('click', logoutUser);
+
+    // ===== Load customer data (real-time) =====
+    const customerRef = doc(db, 'customers', currentUser.uid);
+    onSnapshot(customerRef, (snap) => {
+      if (!snap.exists()) return;
+      const data = snap.data();
+      const totalPurchases = data.totalPurchases || 0;
+      const totalPaid = data.totalPaid || 0;
+      const balance = Math.max(0, totalPurchases - totalPaid);
+      const settled = balance === 0;
+
+      document.getElementById('welcome-sub').textContent =
+        settled
+          ? '✅ حسابك مسوّى بالكامل - شكراً لك!'
+          : `لديك رصيد متبقي قدره ${formatCurrency(balance)}`;
+
+      document.getElementById('total-purchases').textContent = formatCurrency(totalPurchases);
+      document.getElementById('total-paid').textContent = formatCurrency(totalPaid);
+      document.getElementById('total-balance').textContent = settled ? 'مسوّى ✓' : formatCurrency(balance);
+
+      const balanceCard = document.getElementById('balance-card');
+      const balanceIcon = document.getElementById('balance-icon');
+      if (settled) {
+        balanceCard.classList.add('settled');
+        balanceIcon.className = 'fas fa-check-circle';
+      } else {
+        balanceCard.classList.remove('settled');
+        balanceIcon.className = 'fas fa-scale-unbalanced';
+      }
+
+      const runningLabel = document.getElementById('running-label');
+      runningLabel.textContent = `الرصيد الحالي: ${settled ? 'مسوّى' : formatCurrency(balance)}`;
+      runningLabel.className = `running-balance ${settled ? 'zero' : 'positive'}`;
+    }, (err) => {
+      showToast('خطأ في تحميل بياناتك', 'error');
+    });
+
+    // ===== Load Transactions (real-time) =====
+    let allTransactions = [];
+    let activeFilter = 'all';
+
+    const txQuery = query(
+      collection(db, 'customers', currentUser.uid, 'transactions'),
+      orderBy('date', 'asc')
+    );
+
+    onSnapshot(txQuery, (snapshot) => {
+      allTransactions = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      // Update counts
+      const purchases = allTransactions.filter(t => t.type === 'purchase');
+      const payments = allTransactions.filter(t => t.type === 'payment');
+      document.getElementById('count-purchases').innerHTML = `<i class="fas fa-cart-shopping"></i> ${purchases.length} مشترى`;
+      document.getElementById('count-payments').innerHTML = `<i class="fas fa-money-bill-wave"></i> ${payments.length} دفعة`;
+
+      renderLedger(activeFilter);
+    }, (err) => {
+      console.error(err);
+    });
+
+    // Filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        activeFilter = this.dataset.filter;
+        renderLedger(activeFilter);
+      });
+    });
+
+    function renderLedger(filter) {
+      const tbody = document.getElementById('ledger-tbody');
+      const filtered = filter === 'all' ? allTransactions : allTransactions.filter(t => t.type === filter);
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8">
+          <div class="empty-state">
+            <i class="fas fa-receipt"></i>
+            <h3>لا توجد معاملات</h3>
+            <p>${filter === 'all' ? 'لم يتم تسجيل أي معاملات بعد' : 'لا توجد معاملات من هذا النوع'}</p>
+          </div>
+        </td></tr>`;
+        return;
+      }
+
+      // Compute running balance across ALL transactions (for accuracy)
+      let running = 0;
+      const rows = [];
+      allTransactions.forEach(tx => {
+        if (tx.type === 'purchase') running += (tx.amount || 0);
+        else if (tx.type === 'payment') running -= (tx.amount || 0);
+
+        if (filter === 'all' || tx.type === filter) {
+          rows.push({ tx, running });
+        }
+      });
+
+      tbody.innerHTML = rows.map(({ tx, running: rb }, i) => {
+        const isPurchase = tx.type === 'purchase';
+        const settled = rb <= 0.001;
+        return `<tr>
+          <td class="text-muted" style="font-size:0.82rem">${i + 1}</td>
+          <td style="white-space:nowrap;font-size:0.88rem">${formatDate(tx.date)}</td>
+          <td>
+            <span class="tx-type-badge ${isPurchase ? 'tx-purchase' : 'tx-payment'}">
+              <i class="fas ${isPurchase ? 'fa-cart-shopping' : 'fa-hand-holding-dollar'}"></i>
+              ${isPurchase ? 'مشترى' : 'دفعة'}
+            </span>
+          </td>
+          <td>
+            <span class="font-semibold">${tx.description || '---'}</span>
+            ${tx.notes ? `<div style="font-size:0.75rem;color:var(--text-muted)">${tx.notes}</div>` : ''}
+          </td>
+          <td class="text-center text-muted">${isPurchase ? (tx.quantity || '---') : '---'}</td>
+          <td class="text-muted">${isPurchase ? formatCurrency(tx.unitPrice || 0) : '---'}</td>
+          <td class="${isPurchase ? 'amount-positive' : 'amount-negative'} font-bold">
+            ${isPurchase ? '+' : '-'}${formatCurrency(tx.amount || 0)}
+          </td>
+          <td class="font-bold ${settled ? 'text-success' : 'text-danger'}" style="white-space:nowrap">
+            ${settled ? '<i class="fas fa-check-circle"></i> مسوّى' : formatCurrency(Math.max(0, rb))}
+          </td>
+        </tr>`;
+      }).join('');
+    }
+  </script>
+</body>
+</html>

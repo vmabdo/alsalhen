@@ -1,0 +1,60 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // =====================================================
+    // Helper functions
+    // =====================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && getUserData().role == 'admin';
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // =====================================================
+    // /users/{userId}
+    // - Admin: full read/write
+    // - User: read only their own document
+    // =====================================================
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // =====================================================
+    // /customers/{customerId}
+    // - Admin: full read/write
+    // - Customer: read only their own document
+    // =====================================================
+    match /customers/{customerId} {
+      allow read: if isAuthenticated() && (isOwner(customerId) || isAdmin());
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+
+      // ===================================================
+      // /customers/{customerId}/transactions/{txId}
+      // - Admin: full read/write
+      // - Customer: read only their own transactions
+      // ===================================================
+      match /transactions/{txId} {
+        allow read: if isAuthenticated() && (isOwner(customerId) || isAdmin());
+        allow create: if isAdmin();
+        allow update: if isAdmin();
+        allow delete: if isAdmin();
+      }
+    }
+  }
+}

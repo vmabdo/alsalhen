@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>الصالحين - كشف حساب العميل</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
+</head>
+<body>
+
+  <button class="sidebar-toggle" id="sidebar-toggle"><i class="fas fa-bars"></i></button>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <div class="app-layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon"><i class="fas fa-mobile-screen-button"></i></div>
+        <div class="brand-text"><h2>الصالحين</h2><p>إدارة قطع الغيار</p></div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">الرئيسية</div>
+        <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie"></i> لوحة التحكم</a>
+        <a href="customers.html" class="nav-item active"><i class="fas fa-users"></i> إدارة العملاء</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="admin-info">
+          <div class="admin-avatar" id="admin-avatar-sidebar">م</div>
+          <div>
+            <div class="admin-name" id="admin-name-sidebar">المدير</div>
+            <div class="admin-role">مدير النظام</div>
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-sm btn-block mt-2" id="logout-btn"
+          style="color:rgba(255,255,255,0.6);border-color:rgba(255,255,255,0.12);background:rgba(255,255,255,0.05)">
+          <i class="fas fa-right-from-bracket"></i> تسجيل الخروج
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-title">
+          <h1 id="topbar-customer-name">كشف الحساب</h1>
+          <p id="topbar-date"></p>
+        </div>
+        <div class="topbar-actions">
+          <a href="customers.html" class="btn btn-secondary btn-sm">
+            <i class="fas fa-arrow-right"></i> العودة للعملاء
+          </a>
+          <button class="btn btn-primary btn-sm" id="add-purchase-btn">
+            <i class="fas fa-cart-plus"></i> إضافة مشترى
+          </button>
+          <button class="btn btn-success btn-sm" id="add-payment-btn">
+            <i class="fas fa-hand-holding-dollar"></i> تسجيل دفعة
+          </button>
+        </div>
+      </header>
+
+      <div class="page-content" id="page-content">
+        <!-- Customer Header -->
+        <div class="customer-detail-header" id="customer-header">
+          <div class="customer-detail-avatar" id="c-avatar">?</div>
+          <div class="customer-detail-info">
+            <h2 id="c-name">جارٍ التحميل...</h2>
+            <p id="c-meta">---</p>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-right:auto">
+            <div style="background:rgba(255,255,255,0.10);backdrop-filter:blur(6px);border-radius:12px;padding:14px 18px;text-align:center;border:1px solid rgba(255,255,255,0.12)">
+              <div style="font-size:0.75rem;color:rgba(255,255,255,0.55);margin-bottom:4px">إجمالي المشتريات</div>
+              <div style="font-size:1.1rem;font-weight:900;color:#93c5fd" id="h-purchases">---</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.10);backdrop-filter:blur(6px);border-radius:12px;padding:14px 18px;text-align:center;border:1px solid rgba(255,255,255,0.12)">
+              <div style="font-size:0.75rem;color:rgba(255,255,255,0.55);margin-bottom:4px">المدفوع</div>
+              <div style="font-size:1.1rem;font-weight:900;color:#6ee7b7" id="h-paid">---</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.10);backdrop-filter:blur(6px);border-radius:12px;padding:14px 18px;text-align:center;border:1px solid rgba(255,255,255,0.12)">
+              <div style="font-size:0.75rem;color:rgba(255,255,255,0.55);margin-bottom:4px">الرصيد المتبقي</div>
+              <div style="font-size:1.1rem;font-weight:900;color:#fca5a5" id="h-balance">---</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Transactions -->
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="fas fa-list-check" style="color:var(--accent-dark);margin-left:8px"></i>سجل المعاملات</h3>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <div class="filter-bar" style="margin:0">
+                <button class="filter-btn active" data-filter="all">الكل</button>
+                <button class="filter-btn" data-filter="purchase">المشتريات</button>
+                <button class="filter-btn" data-filter="payment">الدفعات</button>
+              </div>
+              <button class="btn btn-secondary btn-sm" id="print-btn">
+                <i class="fas fa-print"></i> طباعة
+              </button>
+            </div>
+          </div>
+
+          <div class="table-wrapper" id="tx-table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>التاريخ</th>
+                  <th>النوع</th>
+                  <th>الوصف / الصنف</th>
+                  <th>الكمية</th>
+                  <th>سعر الوحدة</th>
+                  <th>المبلغ</th>
+                  <th>الرصيد التراكمي</th>
+                  <th>حذف</th>
+                </tr>
+              </thead>
+              <tbody id="tx-tbody">
+                <tr>
+                  <td colspan="9">
+                    <div style="text-align:center;padding:30px">
+                      <div class="loading-spinner" style="margin:0 auto 10px"></div>
+                      <p class="text-muted">جارٍ تحميل المعاملات...</p>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== ADD PURCHASE MODAL ===== -->
+  <div class="modal-overlay" id="add-purchase-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3><i class="fas fa-cart-plus" style="color:var(--accent-dark);margin-left:8px"></i>إضافة مشترى جديد</h3>
+        <button class="modal-close" onclick="closeModal('add-purchase-modal')"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="add-purchase-form" novalidate>
+          <div class="form-group">
+            <label class="form-label">اسم الصنف <span class="required">*</span></label>
+            <input type="text" id="p-description" class="form-control" placeholder="مثال: شاشة iPhone 14، فلاتة شحن..." required />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">الكمية <span class="required">*</span></label>
+              <input type="number" id="p-quantity" class="form-control" value="1" min="1" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">سعر الوحدة (ج.م) <span class="required">*</span></label>
+              <input type="number" id="p-unit-price" class="form-control" placeholder="0.00" min="0" step="0.01" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">الإجمالي</label>
+            <input type="text" id="p-total" class="form-control" readonly
+              style="background:var(--border-light);font-weight:700;color:var(--primary);font-size:1rem" value="0.00 ج.م" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">التاريخ <span class="required">*</span></label>
+            <input type="date" id="p-date" class="form-control" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">ملاحظات</label>
+            <input type="text" id="p-notes" class="form-control" placeholder="اختياري" />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('add-purchase-modal')">إلغاء</button>
+        <button class="btn btn-primary" id="save-purchase-btn">
+          <i class="fas fa-cart-plus"></i> إضافة المشترى
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ADD PAYMENT MODAL ===== -->
+  <div class="modal-overlay" id="add-payment-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3><i class="fas fa-hand-holding-dollar" style="color:var(--success);margin-left:8px"></i>تسجيل دفعة</h3>
+        <button class="modal-close" onclick="closeModal('add-payment-modal')"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="add-payment-form" novalidate>
+          <div class="form-group">
+            <label class="form-label">الرصيد الحالي</label>
+            <input type="text" id="pay-current-balance" class="form-control" readonly
+              style="background:var(--border-light);font-weight:700;color:var(--danger);font-size:1rem" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">مبلغ الدفعة (ج.م) <span class="required">*</span></label>
+            <input type="number" id="pay-amount" class="form-control" placeholder="0.00" min="0.01" step="0.01" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">التاريخ <span class="required">*</span></label>
+            <input type="date" id="pay-date" class="form-control" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">ملاحظات</label>
+            <input type="text" id="pay-notes" class="form-control" placeholder="اختياري - مثال: دفع نقدي" />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('add-payment-modal')">إلغاء</button>
+        <button class="btn btn-success" id="save-payment-btn">
+          <i class="fas fa-hand-holding-dollar"></i> تسجيل الدفعة
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <script type="module">
+    import { db, auth } from '../js/firebase-config.js';
+    import { requireAuth, logoutUser } from '../js/auth.js';
+    import {
+      doc, getDoc, collection, addDoc, deleteDoc, updateDoc,
+      onSnapshot, query, orderBy, serverTimestamp, increment, Timestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import {
+      formatCurrency, formatDate, getInitials, getArabicDate,
+      showToast, confirmDelete, openModal, closeModal, todayInputValue, toNumber
+    } from '../js/utils.js';
+
+    // Make closeModal global
+    window.closeModal = closeModal;
+
+    // Auth guard
+    let currentAdmin;
+    try { currentAdmin = await requireAuth('admin'); }
+    catch (_) { window.location.href = '/index.html'; }
+
+    document.getElementById('admin-avatar-sidebar').textContent = getInitials(currentAdmin.displayName || 'م');
+    document.getElementById('admin-name-sidebar').textContent = currentAdmin.displayName || 'المدير';
+    document.getElementById('topbar-date').textContent = getArabicDate();
+    document.getElementById('logout-btn').addEventListener('click', logoutUser);
+
+    // Sidebar toggle
+    const sidebar = document.getElementById('sidebar');
+    const sideOverlay = document.getElementById('sidebar-overlay');
+    document.getElementById('sidebar-toggle').addEventListener('click', () => {
+      sidebar.classList.toggle('open'); sideOverlay.classList.toggle('show');
+    });
+    sideOverlay.addEventListener('click', () => { sidebar.classList.remove('open'); sideOverlay.classList.remove('show'); });
+
+    // Get customer ID from URL
+    const params = new URLSearchParams(window.location.search);
+    const customerId = params.get('id');
+    if (!customerId) { window.location.href = 'customers.html'; }
+
+    // Set default dates
+    document.getElementById('p-date').value = todayInputValue();
+    document.getElementById('pay-date').value = todayInputValue();
+
+    // Auto-calculate total for purchase
+    function updatePurchaseTotal() {
+      const qty = toNumber(document.getElementById('p-quantity').value);
+      const price = toNumber(document.getElementById('p-unit-price').value);
+      document.getElementById('p-total').value = formatCurrency(qty * price);
+    }
+    document.getElementById('p-quantity').addEventListener('input', updatePurchaseTotal);
+    document.getElementById('p-unit-price').addEventListener('input', updatePurchaseTotal);
+
+    // Load customer data
+    let customerData = null;
+    const customerRef = doc(db, 'customers', customerId);
+    const unsubCustomer = onSnapshot(customerRef, (snap) => {
+      if (!snap.exists()) { window.location.href = 'customers.html'; return; }
+      customerData = snap.data();
+      const balance = (customerData.totalPurchases || 0) - (customerData.totalPaid || 0);
+      document.getElementById('topbar-customer-name').textContent = customerData.displayName || 'العميل';
+      document.getElementById('c-avatar').textContent = getInitials(customerData.displayName || '?');
+      document.getElementById('c-name').textContent = customerData.displayName || '---';
+      document.getElementById('c-meta').innerHTML = `
+        <i class="fas fa-at"></i> ${customerData.username || '---'}
+        ${customerData.phone ? ` &bull; <i class="fas fa-phone"></i> ${customerData.phone}` : ''}
+        ${customerData.address ? ` &bull; <i class="fas fa-location-dot"></i> ${customerData.address}` : ''}`;
+      document.getElementById('h-purchases').textContent = formatCurrency(customerData.totalPurchases || 0);
+      document.getElementById('h-paid').textContent = formatCurrency(customerData.totalPaid || 0);
+      document.getElementById('h-balance').textContent = formatCurrency(Math.max(0, balance));
+      document.getElementById('pay-current-balance').value = formatCurrency(Math.max(0, balance));
+    });
+
+    // ===== Transactions real-time =====
+    let allTransactions = [];
+    let activeFilter = 'all';
+
+    const txQuery = query(
+      collection(db, 'customers', customerId, 'transactions'),
+      orderBy('date', 'asc')
+    );
+    onSnapshot(txQuery, (snapshot) => {
+      allTransactions = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderTransactions(activeFilter);
+    });
+
+    // Filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        activeFilter = this.dataset.filter;
+        renderTransactions(activeFilter);
+      });
+    });
+
+    function renderTransactions(filter) {
+      const tbody = document.getElementById('tx-tbody');
+      let txs = filter === 'all' ? allTransactions : allTransactions.filter(t => t.type === filter);
+
+      if (txs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9">
+          <div class="empty-state">
+            <i class="fas fa-receipt"></i>
+            <h3>لا توجد معاملات</h3>
+            <p>${filter === 'all' ? 'لم يتم تسجيل أي معاملات بعد' : 'لا توجد معاملات من هذا النوع'}</p>
+          </div>
+        </td></tr>`;
+        return;
+      }
+
+      // Compute running balance
+      let running = 0;
+      const rows = [];
+      // Use all (sorted by date) for running balance, then filter display
+      allTransactions.forEach(tx => {
+        if (tx.type === 'purchase') running += (tx.amount || 0);
+        else if (tx.type === 'payment') running -= (tx.amount || 0);
+
+        if (filter === 'all' || tx.type === filter) {
+          rows.push({ tx, running });
+        }
+      });
+
+      tbody.innerHTML = rows.map(({ tx, running: rb }, i) => {
+        const isPurchase = tx.type === 'purchase';
+        const settled = rb <= 0;
+        return `<tr>
+          <td class="text-muted">${i + 1}</td>
+          <td style="white-space:nowrap">${formatDate(tx.date)}</td>
+          <td>
+            <span class="tx-type-badge ${isPurchase ? 'tx-purchase' : 'tx-payment'}">
+              <i class="fas ${isPurchase ? 'fa-cart-shopping' : 'fa-money-bill-wave'}"></i>
+              ${isPurchase ? 'مشترى' : 'دفعة'}
+            </span>
+          </td>
+          <td class="font-semibold">${tx.description || '---'}${tx.notes ? `<div style="font-size:0.75rem;color:var(--text-muted)">${tx.notes}</div>` : ''}</td>
+          <td class="text-center">${isPurchase ? (tx.quantity || '---') : '---'}</td>
+          <td>${isPurchase ? formatCurrency(tx.unitPrice || 0) : '---'}</td>
+          <td class="${isPurchase ? 'amount-positive' : 'amount-negative'} font-bold">
+            ${isPurchase ? '+' : '-'}${formatCurrency(tx.amount || 0)}
+          </td>
+          <td class="font-bold ${settled ? 'text-success' : 'text-danger'}" style="white-space:nowrap">
+            ${settled ? '<i class="fas fa-check-circle"></i> مسوّى' : formatCurrency(Math.max(0, rb))}
+          </td>
+          <td>
+            <button class="btn btn-danger btn-sm" onclick="deleteTransaction('${tx.id}', ${tx.amount}, '${tx.type}')">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    // ===== Modals =====
+    document.getElementById('add-purchase-btn').addEventListener('click', () => {
+      document.getElementById('add-purchase-form').reset();
+      document.getElementById('p-date').value = todayInputValue();
+      document.getElementById('p-quantity').value = 1;
+      document.getElementById('p-total').value = '0.00 ج.م';
+      openModal('add-purchase-modal');
+    });
+
+    document.getElementById('add-payment-btn').addEventListener('click', () => {
+      document.getElementById('add-payment-form').reset();
+      document.getElementById('pay-date').value = todayInputValue();
+      if (customerData) {
+        const bal = Math.max(0, (customerData.totalPurchases || 0) - (customerData.totalPaid || 0));
+        document.getElementById('pay-current-balance').value = formatCurrency(bal);
+      }
+      openModal('add-payment-modal');
+    });
+
+    // ===== Save Purchase =====
+    document.getElementById('save-purchase-btn').addEventListener('click', async () => {
+      const description = document.getElementById('p-description').value.trim();
+      const quantity = toNumber(document.getElementById('p-quantity').value);
+      const unitPrice = toNumber(document.getElementById('p-unit-price').value);
+      const dateVal = document.getElementById('p-date').value;
+      const notes = document.getElementById('p-notes').value.trim();
+
+      if (!description || !quantity || !unitPrice || !dateVal) {
+        showToast('يرجى ملء جميع الحقول الإلزامية', 'warning'); return;
+      }
+
+      const amount = quantity * unitPrice;
+      const btn = document.getElementById('save-purchase-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+      try {
+        const date = Timestamp.fromDate(new Date(dateVal));
+        await addDoc(collection(db, 'customers', customerId, 'transactions'), {
+          type: 'purchase',
+          date,
+          description,
+          quantity,
+          unitPrice,
+          amount,
+          notes,
+          createdBy: currentAdmin.uid,
+          createdAt: serverTimestamp()
+        });
+        // Update cached totals
+        await updateDoc(customerRef, { totalPurchases: increment(amount) });
+        closeModal('add-purchase-modal');
+        showToast(`تم إضافة "${description}" بمبلغ ${formatCurrency(amount)} ✓`, 'success');
+      } catch (err) {
+        showToast('خطأ: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-cart-plus"></i> إضافة المشترى';
+      }
+    });
+
+    // ===== Save Payment =====
+    document.getElementById('save-payment-btn').addEventListener('click', async () => {
+      const amount = toNumber(document.getElementById('pay-amount').value);
+      const dateVal = document.getElementById('pay-date').value;
+      const notes = document.getElementById('pay-notes').value.trim();
+
+      if (!amount || amount <= 0 || !dateVal) {
+        showToast('يرجى إدخال مبلغ صحيح والتاريخ', 'warning'); return;
+      }
+
+      const btn = document.getElementById('save-payment-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+      try {
+        const date = Timestamp.fromDate(new Date(dateVal));
+        await addDoc(collection(db, 'customers', customerId, 'transactions'), {
+          type: 'payment',
+          date,
+          description: 'دفعة نقدية',
+          amount,
+          notes,
+          createdBy: currentAdmin.uid,
+          createdAt: serverTimestamp()
+        });
+        await updateDoc(customerRef, { totalPaid: increment(amount) });
+        closeModal('add-payment-modal');
+        showToast(`تم تسجيل دفعة ${formatCurrency(amount)} ✓`, 'success');
+      } catch (err) {
+        showToast('خطأ: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-hand-holding-dollar"></i> تسجيل الدفعة';
+      }
+    });
+
+    // ===== Delete Transaction =====
+    window.deleteTransaction = async function(txId, amount, type) {
+      const confirmed = await confirmDelete('هل تريد حذف هذه المعاملة؟ سيتم تعديل الرصيد تلقائياً.');
+      if (!confirmed) return;
+      try {
+        await deleteDoc(doc(db, 'customers', customerId, 'transactions', txId));
+        // Reverse the amount
+        if (type === 'purchase') {
+          await updateDoc(customerRef, { totalPurchases: increment(-amount) });
+        } else {
+          await updateDoc(customerRef, { totalPaid: increment(-amount) });
+        }
+        showToast('تم حذف المعاملة بنجاح', 'success');
+      } catch (err) {
+        showToast('خطأ في الحذف: ' + err.message, 'error');
+      }
+    };
+
+    // ===== Print =====
+    document.getElementById('print-btn').addEventListener('click', () => {
+      window.print();
+    });
+  </script>
+</body>
+</html>

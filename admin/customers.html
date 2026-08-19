@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>الصالحين - إدارة العملاء</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
+</head>
+<body>
+
+  <button class="sidebar-toggle" id="sidebar-toggle"><i class="fas fa-bars"></i></button>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <div class="app-layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon"><i class="fas fa-mobile-screen-button"></i></div>
+        <div class="brand-text">
+          <h2>الصالحين</h2>
+          <p>إدارة قطع الغيار</p>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">الرئيسية</div>
+        <a href="dashboard.html" class="nav-item"><i class="fas fa-chart-pie"></i> لوحة التحكم</a>
+        <a href="customers.html" class="nav-item active"><i class="fas fa-users"></i> إدارة العملاء</a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="admin-info">
+          <div class="admin-avatar" id="admin-avatar-sidebar">م</div>
+          <div>
+            <div class="admin-name" id="admin-name-sidebar">المدير</div>
+            <div class="admin-role">مدير النظام</div>
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-sm btn-block mt-2" id="logout-btn"
+          style="color:rgba(255,255,255,0.6);border-color:rgba(255,255,255,0.12);background:rgba(255,255,255,0.05)">
+          <i class="fas fa-right-from-bracket"></i> تسجيل الخروج
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-title">
+          <h1>إدارة العملاء</h1>
+          <p id="topbar-date"></p>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-primary" id="add-customer-btn">
+            <i class="fas fa-user-plus"></i> إضافة عميل جديد
+          </button>
+        </div>
+      </header>
+
+      <div class="page-content">
+
+        <!-- Filter/Search bar -->
+        <div class="card mb-4" style="padding:16px 20px">
+          <div class="d-flex gap-3 align-center" style="flex-wrap:wrap">
+            <div class="search-bar">
+              <i class="fas fa-search search-icon"></i>
+              <input type="text" id="search-input" class="form-control" placeholder="بحث بالاسم أو رقم الهاتف..." />
+            </div>
+            <div style="margin-right:auto;color:var(--text-muted);font-size:0.85rem" id="customer-count">
+              جارٍ التحميل...
+            </div>
+          </div>
+        </div>
+
+        <!-- Customers Grid -->
+        <div class="customers-grid" id="customers-grid">
+          <div style="grid-column:1/-1;text-align:center;padding:40px">
+            <div class="loading-spinner" style="margin:0 auto 12px"></div>
+            <p class="text-muted">جارٍ تحميل قائمة العملاء...</p>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== ADD CUSTOMER MODAL ===== -->
+  <div class="modal-overlay" id="add-customer-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3><i class="fas fa-user-plus" style="color:var(--accent-dark);margin-left:8px"></i>إضافة عميل جديد</h3>
+        <button class="modal-close" id="close-add-modal"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <div id="add-customer-error" class="alert alert-danger hidden mb-3">
+          <i class="fas fa-circle-exclamation"></i><span id="add-error-text"></span>
+        </div>
+        <form id="add-customer-form" novalidate>
+          <div class="form-group">
+            <label class="form-label">الاسم الكامل <span class="required">*</span></label>
+            <input type="text" id="c-display-name" class="form-control" placeholder="مثال: أحمد محمد الصالح" required />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">البريد الإلكتروني <span class="required">*</span></label>
+              <input type="email" id="c-email" class="form-control" placeholder="customer@example.com" required />
+              <div class="form-text">يُستخدم لتسجيل الدخول</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">رقم الهاتف</label>
+              <input type="tel" id="c-phone" class="form-control" placeholder="01xxxxxxxxx" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">اسم المستخدم <span class="required">*</span></label>
+              <input type="text" id="c-username" class="form-control" placeholder="mثال: ahmed2025" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">كلمة المرور <span class="required">*</span></label>
+              <div style="position:relative">
+                <input type="text" id="c-password" class="form-control" placeholder="6 أحرف على الأقل" required style="padding-left:40px" />
+                <button type="button" onclick="generatePassword()" style="position:absolute;left:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--accent-dark);cursor:pointer;font-size:0.85rem" title="توليد كلمة مرور تلقائية">
+                  <i class="fas fa-wand-magic-sparkles"></i>
+                </button>
+              </div>
+              <div class="form-text">ستُحفظ لمشاركتها مع العميل</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">العنوان / الملاحظات</label>
+            <input type="text" id="c-address" class="form-control" placeholder="اختياري" />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancel-add-btn">إلغاء</button>
+        <button class="btn btn-primary" id="save-customer-btn">
+          <i class="fas fa-user-plus"></i> إنشاء الحساب
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== EDIT CUSTOMER MODAL ===== -->
+  <div class="modal-overlay" id="edit-customer-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3><i class="fas fa-user-pen" style="color:var(--accent-dark);margin-left:8px"></i>تعديل بيانات العميل</h3>
+        <button class="modal-close" id="close-edit-modal"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="edit-customer-form" novalidate>
+          <div class="form-group">
+            <label class="form-label">الاسم الكامل <span class="required">*</span></label>
+            <input type="text" id="e-display-name" class="form-control" required />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">اسم المستخدم</label>
+              <input type="text" id="e-username" class="form-control" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">رقم الهاتف</label>
+              <input type="tel" id="e-phone" class="form-control" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">العنوان / الملاحظات</label>
+            <input type="text" id="e-address" class="form-control" />
+          </div>
+          <input type="hidden" id="e-customer-id" />
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancel-edit-btn">إلغاء</button>
+        <button class="btn btn-primary" id="save-edit-btn">
+          <i class="fas fa-save"></i> حفظ التغييرات
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <script type="module">
+    import { db, auth, secondaryAuth } from '../js/firebase-config.js';
+    import { requireAuth, logoutUser } from '../js/auth.js';
+    import {
+      collection, doc, setDoc, updateDoc, deleteDoc,
+      onSnapshot, query, orderBy, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import {
+      createUserWithEmailAndPassword, updateProfile
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import {
+      formatCurrency, getInitials, getArabicDate,
+      showToast, confirmDelete, debounce, openModal, closeModal
+    } from '../js/utils.js';
+
+    // Auth guard
+    let currentAdmin;
+    try {
+      currentAdmin = await requireAuth('admin');
+    } catch (_) { window.location.href = '/index.html'; }
+
+    document.getElementById('admin-avatar-sidebar').textContent = getInitials(currentAdmin.displayName || 'م');
+    document.getElementById('admin-name-sidebar').textContent = currentAdmin.displayName || 'المدير';
+    document.getElementById('topbar-date').textContent = getArabicDate();
+    document.getElementById('logout-btn').addEventListener('click', logoutUser);
+
+    // Sidebar toggle
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    document.getElementById('sidebar-toggle').addEventListener('click', () => {
+      sidebar.classList.toggle('open'); overlay.classList.toggle('show');
+    });
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('open'); overlay.classList.remove('show');
+    });
+
+    // ===== Generate Password =====
+    window.generatePassword = function() {
+      const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#$';
+      let pass = '';
+      for (let i = 0; i < 10; i++) pass += chars[Math.floor(Math.random() * chars.length)];
+      document.getElementById('c-password').value = pass;
+    };
+
+    // ===== Modal Controls =====
+    document.getElementById('add-customer-btn').addEventListener('click', () => {
+      document.getElementById('add-customer-form').reset();
+      document.getElementById('add-customer-error').classList.add('hidden');
+      openModal('add-customer-modal');
+    });
+    document.getElementById('close-add-modal').addEventListener('click', () => closeModal('add-customer-modal'));
+    document.getElementById('cancel-add-btn').addEventListener('click', () => closeModal('add-customer-modal'));
+    document.getElementById('close-edit-modal').addEventListener('click', () => closeModal('edit-customer-modal'));
+    document.getElementById('cancel-edit-btn').addEventListener('click', () => closeModal('edit-customer-modal'));
+
+    // ===== Add Customer =====
+    document.getElementById('save-customer-btn').addEventListener('click', async () => {
+      const displayName = document.getElementById('c-display-name').value.trim();
+      const email = document.getElementById('c-email').value.trim();
+      const password = document.getElementById('c-password').value.trim();
+      const username = document.getElementById('c-username').value.trim();
+      const phone = document.getElementById('c-phone').value.trim();
+      const address = document.getElementById('c-address').value.trim();
+
+      const errEl = document.getElementById('add-customer-error');
+      const errText = document.getElementById('add-error-text');
+
+      function showErr(msg) {
+        errText.textContent = msg;
+        errEl.classList.remove('hidden');
+      }
+
+      if (!displayName || !email || !password || !username) {
+        showErr('يرجى ملء جميع الحقول الإلزامية.'); return;
+      }
+      if (password.length < 6) {
+        showErr('كلمة المرور يجب أن تكون 6 أحرف على الأقل.'); return;
+      }
+
+      const saveBtn = document.getElementById('save-customer-btn');
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ الإنشاء...';
+
+      try {
+        // Create Firebase Auth user via secondary app (preserves admin session)
+        const cred = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+        await updateProfile(cred.user, { displayName });
+
+        const uid = cred.user.uid;
+        const now = serverTimestamp();
+
+        // Save to Firestore /users/{uid}
+        await setDoc(doc(db, 'users', uid), {
+          uid, email, displayName, username, role: 'customer', createdAt: now
+        });
+
+        // Save to Firestore /customers/{uid}
+        await setDoc(doc(db, 'customers', uid), {
+          uid, email, displayName, username, phone, address,
+          totalPurchases: 0, totalPaid: 0,
+          createdAt: now
+        });
+
+        // Sign out from secondary app
+        await secondaryAuth.signOut();
+
+        closeModal('add-customer-modal');
+        document.getElementById('add-customer-form').reset();
+        showToast(`تم إنشاء حساب "${displayName}" بنجاح ✓`, 'success');
+      } catch (err) {
+        const msgs = {
+          'auth/email-already-in-use': 'هذا البريد الإلكتروني مستخدم بالفعل.',
+          'auth/invalid-email': 'صيغة البريد الإلكتروني غير صحيحة.',
+          'auth/weak-password': 'كلمة المرور ضعيفة جداً.'
+        };
+        showErr(msgs[err.code] || err.message);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<i class="fas fa-user-plus"></i> إنشاء الحساب';
+      }
+    });
+
+    // ===== Edit Customer =====
+    window.openEditModal = function(customer) {
+      document.getElementById('e-customer-id').value = customer.id;
+      document.getElementById('e-display-name').value = customer.displayName || '';
+      document.getElementById('e-username').value = customer.username || '';
+      document.getElementById('e-phone').value = customer.phone || '';
+      document.getElementById('e-address').value = customer.address || '';
+      openModal('edit-customer-modal');
+    };
+
+    document.getElementById('save-edit-btn').addEventListener('click', async () => {
+      const id = document.getElementById('e-customer-id').value;
+      const displayName = document.getElementById('e-display-name').value.trim();
+      const username = document.getElementById('e-username').value.trim();
+      const phone = document.getElementById('e-phone').value.trim();
+      const address = document.getElementById('e-address').value.trim();
+
+      if (!displayName) { showToast('الاسم مطلوب', 'warning'); return; }
+
+      const btn = document.getElementById('save-edit-btn');
+      btn.disabled = true;
+      try {
+        await updateDoc(doc(db, 'customers', id), { displayName, username, phone, address });
+        await updateDoc(doc(db, 'users', id), { displayName, username });
+        closeModal('edit-customer-modal');
+        showToast('تم تحديث بيانات العميل بنجاح ✓', 'success');
+      } catch (err) {
+        showToast('خطأ: ' + err.message, 'error');
+      } finally { btn.disabled = false; }
+    });
+
+    // ===== Delete Customer =====
+    window.deleteCustomer = async function(id, name) {
+      const confirmed = await confirmDelete(`هل تريد حذف حساب "${name}" نهائياً؟ لا يمكن التراجع عن هذا الإجراء.`);
+      if (!confirmed) return;
+      try {
+        await deleteDoc(doc(db, 'customers', id));
+        await deleteDoc(doc(db, 'users', id));
+        showToast(`تم حذف حساب "${name}"`, 'success');
+      } catch (err) {
+        showToast('خطأ في الحذف: ' + err.message, 'error');
+      }
+    };
+
+    // ===== Real-time customers list =====
+    let allCustomers = [];
+    const q = query(collection(db, 'customers'), orderBy('createdAt', 'desc'));
+    onSnapshot(q, (snapshot) => {
+      allCustomers = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderCustomers(allCustomers);
+    });
+
+    function renderCustomers(customers) {
+      const grid = document.getElementById('customers-grid');
+      document.getElementById('customer-count').textContent = `${customers.length} عميل`;
+
+      if (customers.length === 0) {
+        grid.innerHTML = `<div style="grid-column:1/-1">
+          <div class="empty-state">
+            <i class="fas fa-users-slash"></i>
+            <h3>لا يوجد عملاء بعد</h3>
+            <p>اضغط على "إضافة عميل جديد" للبدء</p>
+          </div>
+        </div>`;
+        return;
+      }
+
+      grid.innerHTML = customers.map(c => {
+        const balance = (c.totalPurchases || 0) - (c.totalPaid || 0);
+        const settled = balance <= 0;
+        return `
+        <div class="customer-card">
+          <div class="customer-card-header">
+            <div class="customer-avatar">${getInitials(c.displayName)}</div>
+            <div style="flex:1;min-width:0">
+              <div class="customer-name">${c.displayName || '---'}</div>
+              <div class="customer-username">
+                <i class="fas fa-at" style="color:var(--text-muted);font-size:0.7rem"></i>
+                ${c.username || '---'}
+                ${c.phone ? `&nbsp;&bull;&nbsp;<i class="fas fa-phone" style="color:var(--text-muted);font-size:0.7rem"></i> ${c.phone}` : ''}
+              </div>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div style="background:rgba(59,130,246,0.07);border-radius:8px;padding:10px;text-align:center">
+              <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:3px">المشتريات</div>
+              <div style="font-weight:800;color:#2563eb;font-size:0.95rem">${formatCurrency(c.totalPurchases || 0)}</div>
+            </div>
+            <div style="background:rgba(16,185,129,0.07);border-radius:8px;padding:10px;text-align:center">
+              <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:3px">المدفوع</div>
+              <div style="font-weight:800;color:var(--success);font-size:0.95rem">${formatCurrency(c.totalPaid || 0)}</div>
+            </div>
+          </div>
+
+          <div class="customer-balance-row">
+            <span class="balance-label"><i class="fas fa-scale-unbalanced"></i> الرصيد المتبقي</span>
+            <span class="balance-amount ${settled ? 'settled' : ''}">
+              ${settled
+                ? '<i class="fas fa-check-circle"></i> مسوّى بالكامل'
+                : formatCurrency(balance)}
+            </span>
+          </div>
+
+          <div class="customer-card-actions">
+            <a href="customer-detail.html?id=${c.id}" class="btn btn-primary btn-sm" style="flex:1">
+              <i class="fas fa-file-invoice-dollar"></i> كشف الحساب
+            </a>
+            <button class="btn btn-secondary btn-sm" onclick="openEditModal(${JSON.stringify(c).replace(/"/g, '&quot;')})">
+              <i class="fas fa-pen"></i>
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="deleteCustomer('${c.id}', '${c.displayName}')">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    // Search
+    document.getElementById('search-input').addEventListener('input', debounce(function() {
+      const q = this.value.trim().toLowerCase();
+      if (!q) { renderCustomers(allCustomers); return; }
+      renderCustomers(allCustomers.filter(c =>
+        (c.displayName || '').toLowerCase().includes(q) ||
+        (c.username || '').toLowerCase().includes(q) ||
+        (c.phone || '').includes(q)
+      ));
+    }, 250));
+  </script>
+</body>
+</html>

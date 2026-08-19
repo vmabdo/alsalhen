@@ -1,0 +1,214 @@
+/* ===================================
+   الصالحين - أنماط بوابة العملاء
+   =================================== */
+
+/* ===== Customer App Layout ===== */
+.customer-layout {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #e8eef7 0%, #f4f6fa 50%, #edf0f7 100%);
+}
+
+/* ===== Customer Topbar ===== */
+.customer-topbar {
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(15,31,61,0.25);
+}
+.customer-topbar .brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.customer-topbar .brand-icon {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  color: var(--primary-dark);
+  box-shadow: 0 4px 12px rgba(201,168,76,0.35);
+}
+.customer-topbar .brand-name {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: white;
+}
+.customer-topbar .brand-sub {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.5);
+}
+.customer-user-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.customer-user-info .user-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: white;
+  text-align: left;
+}
+.customer-user-info .user-label {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.45);
+}
+.customer-avatar-sm {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--primary-dark);
+  font-weight: 800;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+/* ===== Customer Content ===== */
+.customer-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+/* ===== Welcome Banner ===== */
+.welcome-banner {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  color: white;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.welcome-banner::before {
+  content: '';
+  position: absolute;
+  top: -40px; left: -40px;
+  width: 200px; height: 200px;
+  background: rgba(201,168,76,0.08);
+  border-radius: 50%;
+}
+.welcome-banner::after {
+  content: '';
+  position: absolute;
+  bottom: -60px; left: 60px;
+  width: 150px; height: 150px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 50%;
+}
+.welcome-text h2 { color: white; margin: 0 0 4px; }
+.welcome-text p { color: rgba(255,255,255,0.6); margin: 0; font-size: 0.9rem; }
+.welcome-date {
+  background: rgba(255,255,255,0.12);
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  text-align: center;
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.welcome-date .date-day { font-size: 1.8rem; font-weight: 900; color: var(--accent-light); line-height: 1; }
+.welcome-date .date-month { font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-top: 2px; }
+
+/* ===== Balance Cards ===== */
+.balance-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 28px;
+}
+.balance-card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-light);
+  text-align: center;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.balance-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.balance-card .card-icon {
+  width: 56px; height: 56px;
+  border-radius: var(--radius);
+  margin: 0 auto 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+}
+.balance-card.purchases .card-icon { background: rgba(59,130,246,0.12); color: #2563eb; }
+.balance-card.paid .card-icon { background: rgba(16,185,129,0.12); color: var(--success); }
+.balance-card.remaining .card-icon { background: rgba(239,68,68,0.12); color: var(--danger); }
+.balance-card.remaining.settled .card-icon { background: rgba(16,185,129,0.12); color: var(--success); }
+
+.balance-card .card-label {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.balance-card .card-amount {
+  font-size: 1.55rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+.balance-card.purchases .card-amount { color: #2563eb; }
+.balance-card.paid .card-amount { color: var(--success); }
+.balance-card.remaining .card-amount { color: var(--danger); }
+.balance-card.remaining.settled .card-amount { color: var(--success); }
+
+/* ===== Ledger Table ===== */
+.ledger-section { margin-top: 8px; }
+.ledger-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.ledger-header h3 { color: var(--primary); margin: 0; }
+
+.running-balance {
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+}
+.running-balance.positive { background: rgba(239,68,68,0.10); color: var(--danger); }
+.running-balance.zero { background: rgba(16,185,129,0.10); color: var(--success); }
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .balance-cards {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .balance-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-align: right;
+    padding: 18px;
+  }
+  .balance-card .card-icon { margin: 0; flex-shrink: 0; }
+  .customer-content { padding: 20px 16px; }
+  .welcome-banner { padding: 20px; }
+  .customer-topbar { padding: 0 16px; }
+  .customer-topbar .brand-name { display: none; }
+}
+@media (max-width: 480px) {
+  .customer-user-info .user-name { display: none; }
+  .welcome-date { display: none; }
+}
