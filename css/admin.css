@@ -339,6 +339,13 @@
   border-color: var(--primary);
 }
 
+/* ===== Detail Actions (desktop topbar) ===== */
+.detail-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
 /* ===== Responsive — Tablet (≤900px) ===== */
 @media (max-width: 900px) {
   .sidebar {
