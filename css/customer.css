@@ -189,26 +189,60 @@
 .running-balance.positive { background: rgba(239,68,68,0.10); color: var(--danger); }
 .running-balance.zero { background: rgba(16,185,129,0.10); color: var(--success); }
 
-/* ===== Responsive ===== */
+/* ===== Responsive — Tablet (≤768px) ===== */
 @media (max-width: 768px) {
   .balance-cards {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 10px;
   }
   .balance-card {
     display: flex;
     align-items: center;
     gap: 16px;
     text-align: right;
-    padding: 18px;
+    padding: 16px;
   }
   .balance-card .card-icon { margin: 0; flex-shrink: 0; }
-  .customer-content { padding: 20px 16px; }
-  .welcome-banner { padding: 20px; }
+  .balance-card .card-amount { font-size: 1.3rem; }
+
+  .customer-content { padding: 16px; }
+  .welcome-banner { padding: 20px; gap: 12px; }
   .customer-topbar { padding: 0 16px; }
   .customer-topbar .brand-name { display: none; }
+
+  /* Summary row — allow wrapping */
+  #summary-row { gap: 8px; }
+
+  /* Ledger header — stack vertically */
+  .ledger-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .ledger-header > div { width: 100%; }
 }
+
+/* ===== Responsive — Phone (≤480px) ===== */
 @media (max-width: 480px) {
+  /* Topbar */
   .customer-user-info .user-name { display: none; }
+  .customer-topbar { height: 56px; }
+
+  /* Welcome banner */
   .welcome-date { display: none; }
+  .welcome-banner { padding: 16px; border-radius: var(--radius); margin-bottom: 16px; }
+  .welcome-text h2 { font-size: 1.1rem; }
+  .welcome-text p { font-size: 0.82rem; }
+
+  /* Balance cards */
+  .balance-cards { gap: 8px; margin-bottom: 16px; }
+  .balance-card { padding: 14px; gap: 12px; }
+  .balance-card .card-icon { width: 44px; height: 44px; font-size: 1.1rem; }
+  .balance-card .card-label { font-size: 0.78rem; }
+  .balance-card .card-amount { font-size: 1.15rem; }
+
+  /* Ledger filter + print — horizontal scroll */
+  .ledger-header > div { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .ledger-header > div::-webkit-scrollbar { display: none; }
+  .filter-btn { flex-shrink: 0; }
+
+  /* Safe area for notched phones */
+  .customer-content { padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
 }
+

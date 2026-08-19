@@ -106,12 +106,12 @@
           <table>
             <thead>
               <tr>
-                <th>#</th>
+                <th class="hide-mobile">#</th>
                 <th>التاريخ</th>
                 <th>النوع</th>
                 <th>الصنف / الوصف</th>
-                <th>الكمية</th>
-                <th>السعر</th>
+                <th class="hide-mobile">الكمية</th>
+                <th class="hide-mobile">السعر</th>
                 <th>المبلغ</th>
                 <th>الرصيد التراكمي</th>
               </tr>
@@ -271,7 +271,7 @@
         const isPurchase = tx.type === 'purchase';
         const settled = rb <= 0.001;
         return `<tr>
-          <td class="text-muted" style="font-size:0.82rem">${i + 1}</td>
+          <td class="text-muted hide-mobile" style="font-size:0.82rem">${i + 1}</td>
           <td style="white-space:nowrap;font-size:0.88rem">${formatDate(tx.date)}</td>
           <td>
             <span class="tx-type-badge ${isPurchase ? 'tx-purchase' : 'tx-payment'}">
@@ -283,8 +283,8 @@
             <span class="font-semibold">${tx.description || '---'}</span>
             ${tx.notes ? `<div style="font-size:0.75rem;color:var(--text-muted)">${tx.notes}</div>` : ''}
           </td>
-          <td class="text-center text-muted">${isPurchase ? (tx.quantity || '---') : '---'}</td>
-          <td class="text-muted">${isPurchase ? formatCurrency(tx.unitPrice || 0) : '---'}</td>
+          <td class="text-center text-muted hide-mobile">${isPurchase ? (tx.quantity || '---') : '---'}</td>
+          <td class="text-muted hide-mobile">${isPurchase ? formatCurrency(tx.unitPrice || 0) : '---'}</td>
           <td class="${isPurchase ? 'amount-positive' : 'amount-negative'} font-bold">
             ${isPurchase ? '+' : '-'}${formatCurrency(tx.amount || 0)}
           </td>

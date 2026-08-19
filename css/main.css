@@ -515,11 +515,79 @@ tbody td {
 .mb-4 { margin-bottom: 24px; }
 .hidden { display: none !important; }
 
-/* ===== Responsive ===== */
+/* ===== Mobile utilities ===== */
+.hide-mobile { display: revert; }
+.show-mobile { display: none !important; }
+
+/* ===== Responsive — Tablet ===== */
 @media (max-width: 768px) {
   .form-row { grid-template-columns: 1fr; }
   .card { padding: 16px; }
-  .modal { max-width: 95vw; }
-  .stat-card { padding: 18px; }
-  .stat-value { font-size: 1.3rem; }
+  .stat-card { padding: 16px; gap: 14px; }
+  .stat-value { font-size: 1.25rem; }
+  .stat-icon { width: 48px; height: 48px; font-size: 1.25rem; }
+
+  /* Search bar full-width on mobile */
+  .search-bar { max-width: 100%; width: 100%; }
+
+  /* Modal as bottom sheet on tablet */
+  .modal-overlay { align-items: flex-end; padding: 0; }
+  .modal {
+    max-width: 100%;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    max-height: 92vh;
+    transform: translateY(40px);
+  }
+  .modal-overlay.active .modal { transform: translateY(0); }
+}
+
+/* ===== Responsive — Phone ===== */
+@media (max-width: 480px) {
+  html { font-size: 15px; }
+
+  .hide-mobile { display: none !important; }
+  .show-mobile { display: revert !important; }
+
+  /* Cards */
+  .card { padding: 14px; border-radius: var(--radius-sm); }
+  .card-header { margin-bottom: 14px; padding-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+
+  /* Buttons — minimum 44px touch target */
+  .btn { min-height: 44px; padding: 10px 16px; font-size: 0.88rem; }
+  .btn-sm { min-height: 38px; padding: 8px 12px; font-size: 0.82rem; }
+  .btn-lg { min-height: 50px; }
+
+  /* Stat cards */
+  .stat-card { padding: 14px 12px; gap: 12px; }
+  .stat-value { font-size: 1.15rem; }
+  .stat-label { font-size: 0.78rem; }
+  .stat-icon { width: 44px; height: 44px; font-size: 1.15rem; }
+
+  /* Tables */
+  table { font-size: 0.82rem; }
+  thead th { padding: 10px 10px; font-size: 0.78rem; }
+  tbody td { padding: 10px 10px; }
+
+  /* Badges */
+  .badge { font-size: 0.72rem; padding: 3px 8px; }
+
+  /* Toast — centered at bottom */
+  .toast-container {
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 16px;
+    width: calc(100vw - 32px);
+    max-width: 400px;
+  }
+  .toast { min-width: unset; width: 100%; justify-content: flex-start; }
+
+  @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  @keyframes slideOut { to { transform: translateY(20px); opacity: 0; } }
+
+  /* Pagination */
+  .page-btn { width: 40px; height: 40px; }
+
+  /* Form */
+  .form-control { font-size: 16px; /* prevent iOS zoom */ padding: 11px 14px; }
+  .form-group { margin-bottom: 14px; }
 }

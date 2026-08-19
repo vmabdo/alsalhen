@@ -10,10 +10,20 @@
   <link rel="stylesheet" href="../css/main.css" />
   <link rel="stylesheet" href="../css/admin.css" />
 </head>
-<body>
+<body class="has-mobile-bar">
 
   <button class="sidebar-toggle" id="sidebar-toggle"><i class="fas fa-bars"></i></button>
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <!-- Mobile Action Bar -->
+  <div class="mobile-action-bar">
+    <button class="btn btn-primary" id="add-purchase-btn-mobile">
+      <i class="fas fa-cart-plus"></i> إضافة مشترى
+    </button>
+    <button class="btn btn-success" id="add-payment-btn-mobile">
+      <i class="fas fa-hand-holding-dollar"></i> تسجيل دفعة
+    </button>
+  </div>
 
   <div class="app-layout">
     <!-- SIDEBAR -->
@@ -51,14 +61,16 @@
         </div>
         <div class="topbar-actions">
           <a href="customers.html" class="btn btn-secondary btn-sm">
-            <i class="fas fa-arrow-right"></i> العودة للعملاء
+            <i class="fas fa-arrow-right"></i> <span>العودة للعملاء</span>
           </a>
-          <button class="btn btn-primary btn-sm" id="add-purchase-btn">
-            <i class="fas fa-cart-plus"></i> إضافة مشترى
-          </button>
-          <button class="btn btn-success btn-sm" id="add-payment-btn">
-            <i class="fas fa-hand-holding-dollar"></i> تسجيل دفعة
-          </button>
+          <div class="detail-actions" style="display:contents">
+            <button class="btn btn-primary btn-sm" id="add-purchase-btn">
+              <i class="fas fa-cart-plus"></i> <span>إضافة مشترى</span>
+            </button>
+            <button class="btn btn-success btn-sm" id="add-payment-btn">
+              <i class="fas fa-hand-holding-dollar"></i> <span>تسجيل دفعة</span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -106,12 +118,12 @@
             <table>
               <thead>
                 <tr>
-                  <th>#</th>
+                  <th class="hide-mobile">#</th>
                   <th>التاريخ</th>
                   <th>النوع</th>
                   <th>الوصف / الصنف</th>
-                  <th>الكمية</th>
-                  <th>سعر الوحدة</th>
+                  <th class="hide-mobile">الكمية</th>
+                  <th class="hide-mobile">سعر الوحدة</th>
                   <th>المبلغ</th>
                   <th>الرصيد التراكمي</th>
                   <th>حذف</th>
@@ -347,7 +359,7 @@
         const isPurchase = tx.type === 'purchase';
         const settled = rb <= 0;
         return `<tr>
-          <td class="text-muted">${i + 1}</td>
+          <td class="text-muted hide-mobile">${i + 1}</td>
           <td style="white-space:nowrap">${formatDate(tx.date)}</td>
           <td>
             <span class="tx-type-badge ${isPurchase ? 'tx-purchase' : 'tx-payment'}">
@@ -356,8 +368,8 @@
             </span>
           </td>
           <td class="font-semibold">${tx.description || '---'}${tx.notes ? `<div style="font-size:0.75rem;color:var(--text-muted)">${tx.notes}</div>` : ''}</td>
-          <td class="text-center">${isPurchase ? (tx.quantity || '---') : '---'}</td>
-          <td>${isPurchase ? formatCurrency(tx.unitPrice || 0) : '---'}</td>
+          <td class="text-center hide-mobile">${isPurchase ? (tx.quantity || '---') : '---'}</td>
+          <td class="hide-mobile">${isPurchase ? formatCurrency(tx.unitPrice || 0) : '---'}</td>
           <td class="${isPurchase ? 'amount-positive' : 'amount-negative'} font-bold">
             ${isPurchase ? '+' : '-'}${formatCurrency(tx.amount || 0)}
           </td>
@@ -390,6 +402,14 @@
         document.getElementById('pay-current-balance').value = formatCurrency(bal);
       }
       openModal('add-payment-modal');
+    });
+
+    // Mobile action bar — same as desktop
+    document.getElementById('add-purchase-btn-mobile').addEventListener('click', () => {
+      document.getElementById('add-purchase-btn').click();
+    });
+    document.getElementById('add-payment-btn-mobile').addEventListener('click', () => {
+      document.getElementById('add-payment-btn').click();
     });
 
     // ===== Save Purchase =====

@@ -126,12 +126,12 @@
             <table id="customers-table">
               <thead>
                 <tr>
-                  <th>#</th>
+                  <th class="hide-mobile">#</th>
                   <th>اسم العميل</th>
-                  <th>اسم المستخدم</th>
-                  <th>رقم الهاتف</th>
-                  <th>إجمالي المشتريات</th>
-                  <th>المدفوع</th>
+                  <th class="hide-mobile">اسم المستخدم</th>
+                  <th class="hide-mobile">رقم الهاتف</th>
+                  <th class="hide-mobile">إجمالي المشتريات</th>
+                  <th class="hide-mobile">المدفوع</th>
                   <th>الرصيد المتبقي</th>
                   <th>الإجراءات</th>
                 </tr>
@@ -228,22 +228,22 @@
         </td></tr>`;
         return;
       }
-      tbody.innerHTML = customers.map((c, i) => {
+        tbody.innerHTML = customers.map((c, i) => {
         const balance = (c.totalPurchases || 0) - (c.totalPaid || 0);
         const settled = balance <= 0;
         return `
         <tr>
-          <td class="text-muted font-semibold">${i + 1}</td>
+          <td class="text-muted font-semibold hide-mobile">${i + 1}</td>
           <td>
             <div style="display:flex;align-items:center;gap:10px">
               <div class="customer-avatar" style="width:36px;height:36px;font-size:0.9rem;flex-shrink:0">${getInitials(c.displayName)}</div>
               <span class="font-semibold">${c.displayName || '---'}</span>
             </div>
           </td>
-          <td><code style="background:var(--bg);padding:2px 8px;border-radius:6px;font-size:0.82rem">${c.username || '---'}</code></td>
-          <td class="text-muted">${c.phone || '---'}</td>
-          <td class="font-bold" style="color:var(--info)">${formatCurrency(c.totalPurchases || 0)}</td>
-          <td class="font-bold text-success">${formatCurrency(c.totalPaid || 0)}</td>
+          <td class="hide-mobile"><code style="background:var(--bg);padding:2px 8px;border-radius:6px;font-size:0.82rem">${c.username || '---'}</code></td>
+          <td class="text-muted hide-mobile">${c.phone || '---'}</td>
+          <td class="font-bold hide-mobile" style="color:var(--info)">${formatCurrency(c.totalPurchases || 0)}</td>
+          <td class="font-bold text-success hide-mobile">${formatCurrency(c.totalPaid || 0)}</td>
           <td>
             <span class="font-bold ${settled ? 'text-success' : 'text-danger'}">
               ${settled ? '<i class="fas fa-check-circle"></i> مسوّى' : formatCurrency(balance)}
@@ -252,7 +252,7 @@
           <td>
             <div style="display:flex;gap:6px">
               <a href="customer-detail.html?id=${c.id}" class="btn btn-primary btn-sm">
-                <i class="fas fa-eye"></i> تفاصيل
+                <i class="fas fa-eye"></i> <span class="hide-mobile">تفاصيل</span>
               </a>
             </div>
           </td>
